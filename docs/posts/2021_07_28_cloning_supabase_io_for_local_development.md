@@ -110,7 +110,7 @@ Next, I modified the `Dockerfile` so that I could accept the anon key and servic
 
 Here's my updated `Dockerfile`:
 
-```docker
+```dockerfile
 FROM kong:2.1
 
 # Build time defaults
@@ -137,7 +137,7 @@ The `PostgreSQL` service is handled in basically the same manner by Supabase as 
 
 The first thing I did was collect all the SQL files into a directory called `init.d`.  I then deleted the `storage-schema.sql` file because storage is not a service we care about. I then renamed `auth-schema.sql` to `10-auth-schema.sql` and added another file called `15-post-auth-schema.sql`.  Here's what that file looked like:
 
-```sql
+```postgres
 ALTER ROLE postgres SET search_path = "$user", auth, public, extensions;
 ```
 
@@ -145,7 +145,7 @@ ALTER ROLE postgres SET search_path = "$user", auth, public, extensions;
 
 Next I modified the `Dockerfile` to just copy the entire `init.d` directory into the image at `/docker-entrypoint-inidb.d` and I got rid of most of the other stuff because it just seemed redundant to me.  Here's the `Dockerfile` I ended up with.
 
-```docker
+```dockerfile
 FROM supabase/postgres:0.13.0
 COPY /init.d /docker-entrypoint-initdb.d
 ```
@@ -297,7 +297,7 @@ The `GoTrue` service is configured to automatically confirm sign-ups in this con
 
 So far this seems to be working fairly well. In our Next JS front-end we can continue to use the Supabase JS client to talk to all the Supabase services locally with zero changes other than updating environment variables. Our server-side client is created like this:
 
-```jsx
+```js
 export const supabaseAdmin = createClient(
 	process.env.NEXT_PUBLIC_SUPABASE_URL,
 	process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -306,7 +306,7 @@ export const supabaseAdmin = createClient(
 
 and our client-side client is created like this:
 
-```jsx
+```js
 export const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -315,7 +315,7 @@ export const supabase = createClient(
 
 and this is our `.env.local` for our front end:
 
-```jsx
+```js
 SUPABASE_SERVICE_ROLE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIiwiaWF0IjoxNjI0MzgwNjM0LCJleHAiOjE5Mzk5NTY2MzR9.DXrT8gTevzIEBTJwWLwEDc1VzyzOe5Y3EggHAU8TNBE"
 NEXT_PUBLIC_SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYyNDM4MDYzNCwiZXhwIjoxOTM5OTU2NjM0fQ.SDH7wXuJ0WMRpgvSLIolzqI8wn7XAdl8p5niE8y-PYw"
 NEXT_PUBLIC_SUPABASE_URL="http://localhost:60005"
