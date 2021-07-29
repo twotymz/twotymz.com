@@ -5,3 +5,8 @@ minima:
   social_links:
     twitter: twotymz
     github: twotymz
+theme: minima
+
+plugins:
+ - jekyll-feed
+ - jekyll-seo-tag
