@@ -1,1 +1,1 @@
-# twotymz.github.io
+# twotymz.com
