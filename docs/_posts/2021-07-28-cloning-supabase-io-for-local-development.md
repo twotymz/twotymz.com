@@ -1,3 +1,8 @@
+---
+layout: post
+title: Cloning supbase.io for Local Development
+date: 2021-07-28 00:00:00 -0000
+---
 # Cloning supbase.io for Local Development
 
 *July 28, 2021*
