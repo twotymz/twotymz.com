@@ -1,6 +1,3 @@
----
-title: Josh
----
 # Cloning supbase.io for Local Development
 
 *July 28, 2021*
