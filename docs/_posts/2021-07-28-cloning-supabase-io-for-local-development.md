@@ -2,8 +2,6 @@
 layout: post
 title: Cloning supbase.io for Local Development
 date: 2021-07-28 00:00:00 -0000
-excerpt: >
-  Our team recently needed the ability to spin up a [supabase.io](http://supabase.io) back end for local development.  After some trial and error I came up with a working solution mostly based on the Supabase [repo](https://github.com/supabase/supabase) but with some quality of life modifications and removing services we didn't use.
 ---
 Our team recently needed the ability to spin up a [supabase.io](http://supabase.io) back end for local development.  After some trial and error I came up with a working solution mostly based on the Supabase [repo](https://github.com/supabase/supabase) but with some quality of life modifications and removing services we didn't use.
 
