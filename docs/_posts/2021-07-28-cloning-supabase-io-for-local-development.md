@@ -6,15 +6,15 @@ excerpt: "Our team recently needed the ability to spin up a [supabase.io](http:/
 ---
 Our team recently needed the ability to spin up a [supabase.io](http://supabase.io) back end for local development.  After some trial and error I came up with a working solution mostly based on the Supabase [repo](https://github.com/supabase/supabase) but with some quality of life modifications and removing services we didn't use.
 
-# My Goals
+## My Goals
 
 I set out to get all the underlying Supabase services running on the ports of my choosing.  Also, make no modifications to our front-end code other than modifying environment variables so the [supabase-js client](https://github.com/supabase/supabase-js) continues to work as expected.
 
-# TLDR
+## TLDR
 
 If you want to skip all the details or follow along as you read the rest, I created a template repo [here](https://github.com/twotymz/supabase_clone) that contains everything I ended up doing.
 
-# Why I Didn't Just Use Supabase's Repo
+## Why I Didn't Just Use Supabase's Repo
 
 I started first by cloning the [official Supabase repo](https://github.com/supabase/supabase).  I was hoping I could just modify a couple `.env` files and `docker-compose up` and be done. That wasn't the case. The main issue I ran in to was that I couldn't modify the ports the services were mapped to on localhost. It turns out that's not what the variables in their `.env` configure.  I looked into their `docker-compose.yml` file and basically they expect things to work on very specific ports and that's fine it just doesn't work for us.  A second minor issue was that there was hard coded keys used to initialize the `kong` container and I didn't really like that. I thought it'd be cooler if those could come from the Docker `.env`.
 
@@ -24,7 +24,7 @@ After spending some time looking through their `docker-compose.yml` file and the
 - starts `PostgreSQL` and initializes the database with Supabase's schemas
 - starts the rest of the Supabase services: `GoTrue`, `PostgREST`, and `supabase realtime`
 
-# The Kong Service
+## The Kong Service
 
 Supabase builds the `kong` service locally from the official `kong:2.1` Docker image.  They do this so they can provide the image a custom `kong.yml` file that sets up the routing to the Supabase services.  I figured I'd do the same thing.  I started by copying the `Dockerfile` and the `kong.yml` file from [their](https://github.com/supabase/supabase/tree/master/docker/dockerfiles/kong) repo into my working directory at `/kong`. The `kong.yml` file from supabase had the anon and service-role keys hard coded in it so I modified the file so that keys could be passed in at build time.  I did this by replacing the keys with unique strings that would be easy to find and replace later.  I also removed the `storage` service because it's not a feature we needed for our project.
 
@@ -133,7 +133,7 @@ RUN sed -i "s/SUPABASE_ANON_KEY/$build_SUPABASE_ANON_KEY/g" /var/lib/kong/kong.y
 RUN sed -i "s/SUPABASE_SERVICE_ROLE_KEY/$build_SUPABASE_SERVICE_ROLE_KEY/g" /var/lib/kong/kong.yml
 ```
 
-# The PostgreSQL Service
+## The PostgreSQL Service
 
 The `PostgreSQL` service is handled in basically the same manner by Supabase as the `kong` service.  They build it locally from their own `supabase/postgres` image which is "unmodified Postgres with some useful plugins" and they throw in some custom SQL initialization scripts that, from what I can tell, add the `auth` schema for the `GoTrue` service and sets up the database roles and users. I copied over all the files from [here](https://github.com/supabase/supabase/tree/master/docker/dockerfiles/postgres) into a `/postgres` directory in my local working directory and started making my changes.
 
@@ -152,7 +152,7 @@ FROM supabase/postgres:0.13.0
 COPY /init.d /docker-entrypoint-initdb.d
 ```
 
-# The Rest of the Supabase Services
+## The Rest of the Supabase Services
 
 `kong` and `PostgreSQL` were the only services that required local configuration files to be present in the images. `GoTrue`, `PostgREST`, and `supabase realtime` are all configured via environment variables in the `docker-compose.yml` file.  So my next task was to take their `docker-compose.yml` file and modify it.  My goals here were to:
 
@@ -256,7 +256,7 @@ services:
       - 5432
 ```
 
-# The Docker .env
+## The Docker .env
 
 The final piece was a Docker `.env` file that allows the developer to specify the ports, passwords, and secrets.
 
@@ -289,13 +289,13 @@ With this `.env` file we have:
 - `supabase realtime` service is accessible at `localhost:60004`.
 - Kong is accessible at `localhost:60005` and is what we need to pass in to `createClient` when creating a supabase JS client instance.
 
-# Future Considerations
+## Future Considerations
 
 I'm not super excited that this solution requires us keeping our project up-to-date with changes to the Supabase repository which is in active development. I'm not sure how much of a maintenance problem this is going to be.  Given the alternatives, I'm fine with it for now.  We're really hoping the Supabase team eventually provides an official template repository that we could use that provides more freedom in how the back-end gets configured locally.
 
 The `GoTrue` service is configured to automatically confirm sign-ups in this configuration. It might be nice to allow the developer to configure the `GoTrue` container to use `SMTP` in development via the `.env` file.
 
-# Summary
+## Summary
 
 So far this seems to be working fairly well. In our Next JS front-end we can continue to use the Supabase JS client to talk to all the Supabase services locally with zero changes other than updating environment variables. Our server-side client is created like this:
 
