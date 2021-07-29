@@ -1,3 +1,6 @@
+---
+title: Cloning supbase.io for Local Development
+---
 # Cloning supbase.io for Local Development
 
 *July 28, 2021*
