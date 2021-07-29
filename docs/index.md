@@ -1,5 +1,3 @@
-Hello.  My name is Josh and I write software. I also collect movies, toys, and play video games.  You can find me here on [twitter](https://twitter.com/twotymz).
-
 *July 28,2021*
 
 Our team recently needed the ability to spin up a [supabase.io](http://supabase.io) back end for local development.  After some trial and error I came up with a working solution mostly based on the Supabase [repo](https://github.com/supabase/supabase) but with some quality of life modifications and removing services we didn't use.
