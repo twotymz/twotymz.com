@@ -1,5 +1,9 @@
+description: >
+  My name is Josh and I write software. I also collect movies, toys, and play video games.
+
 author:
   name: Joshua May
+
 show_excerpts: true
 minima:
   social_links:
