@@ -141,7 +141,7 @@ The first thing I did was collect all the SQL files into a directory called `ini
 ALTER ROLE postgres SET search_path = "$user", auth, public, extensions;
 ```
 
-`15-post-auth-schema.sql` was added as more of a convenience to make extensions available to other SQL scripts we run after the Supabase scripts initialize the database.  Renaming the files so that they are prefixed by a number was to control the order in which the files would be run.  What we do in our project is add our own SQL files that create our project specific database tables and populate them with our own test data.  There are several of these files and they all start with a number after `1`
+`15-post-auth-schema.sql` was added as more of a convenience to make extensions available to other SQL scripts we run after the Supabase scripts initialize the database.  Renaming the files so that they are prefixed by a number was to control the order in which the files would be run.  What we do in our project is add our own SQL files that create our project specific database tables and populate them with our own test data.  There are several of these files and they all start with a number after `15`.
 
 Next I modified the `Dockerfile` to just copy the entire `init.d` directory into the image at `/docker-entrypoint-inidb.d` and I got rid of most of the other stuff because it just seemed redundant to me.  Here's the `Dockerfile` I ended up with.
 
