@@ -1,5 +1,6 @@
+site:
+  show_excerpts: true
 
-minima:
   social_links:
     twitter: twotymz
     github: twotymz
