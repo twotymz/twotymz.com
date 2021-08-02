@@ -5,7 +5,7 @@ date: 2021-08-02 00:00:00 -0000
 ---
 When PostgREST receives a request that contains a valid JWT with a `role` claim it will switch to a database role with that name for the duration of the HTTP request.  GoTrue doesn't issue JWT's with a `role` claim by default but it's a pretty easy fix to make it do so.
 
-To start, you'll probably want to fork the GoTrue (repo)[https://github.com/netlify/gotrue] so you have a place to make your changes.  Once you have a copy of their baseline you can start editing.
+To start, you'll probably want to fork the GoTrue [repo](https://github.com/netlify/gotrue) so you have a place to make your changes.  Once you have a copy of their baseline you can start editing.
 
 The first change that we need to make is to alter the structure that holds the user claims when GoTrue generates a new access token.  Specifically, we need to add the `Role` claim to the `GoTrueClaims` structure in `api/token.go` like so:
 
